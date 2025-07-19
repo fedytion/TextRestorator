@@ -4,9 +4,11 @@ import java.util.*;
 
 public class WordRestorer {
     private final Set<String> dictionary;
+    private final Map<String, Long> unigramFreq;
 
-    public WordRestorer(Set<String> dictionary) {
+    public WordRestorer(Set<String> dictionary, Map<String, Long> unigramFreq) {
         this.dictionary = dictionary;
+        this.unigramFreq = unigramFreq;
     }
 
     public List<String> restoreCandidates(String damagedWord) {
@@ -15,6 +17,9 @@ public class WordRestorer {
 
         for (String word : dictionary) {
             if (word.length() != length) continue;
+
+            if (word.length() < 3) continue;
+            if (unigramFreq.getOrDefault(word, 0L) < 10) continue;
 
             if (matchesWithMissingAndShuffled(damagedWord, word)) {
                 candidates.add(word);

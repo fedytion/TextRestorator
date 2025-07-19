@@ -1,34 +1,39 @@
 package main.java.ua.fedytion.loader;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class FrequencyLoader {
-    private final Map<String, Long> freqMap = new HashMap<>();
 
-    public void load(String fileName) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(fileName))))) {
-
+    public static Map<String, Long> loadUnigramFrequencies(String filepath) throws IOException {
+        Map<String, Long> frequencies = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = br.readLine()) != null) {
                 String[] parts = line.trim().split("\\s+");
-                if (parts.length >= 2) {
-                    String word = parts[0].toLowerCase();
-                    long freq = Long.parseLong(parts[1]);
-                    freqMap.put(word, freq);
+                if (parts.length == 2) {
+                    frequencies.put(parts[0].toLowerCase(), Long.parseLong(parts[1]));
                 }
             }
-
-            System.out.println("Frequencies loaded: " + freqMap.size() + " entries");
-
-        } catch (Exception e) {
-            System.err.println("Failed to load frequencies: " + e.getMessage());
         }
+        return frequencies;
     }
 
-    public long getFrequency(String word) {
-        return freqMap.getOrDefault(word.toLowerCase(), 1L);
+    public static Map<String, Map<String, Long>> loadBigramFrequencies(String filepath) throws IOException {
+        Map<String, Map<String, Long>> bigrams = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.trim().split("\\s+");
+                if (parts.length == 3) {
+                    String first = parts[0].toLowerCase();
+                    String second = parts[1].toLowerCase();
+                    long count = Long.parseLong(parts[2]);
+
+                    bigrams.computeIfAbsent(first, k -> new HashMap<>()).put(second, count);
+                }
+            }
+        }
+        return bigrams;
     }
 }

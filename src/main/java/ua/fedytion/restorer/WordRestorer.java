@@ -30,22 +30,25 @@ public class WordRestorer {
     }
 
     private boolean matchesWithMissingAndShuffled(String pattern, String candidate) {
+        // Перевірка на однакову довжину (з урахуванням зірочок)
         if (pattern.length() != candidate.length()) return false;
 
-        // Порахуємо кількість кожної букви в candidate
         int[] counts = new int[26];
         for (char c : candidate.toCharArray()) {
             if (!Character.isLetter(c)) return false;
-            counts[Character.toLowerCase(c) - 'a']++;
+            int idx = Character.toLowerCase(c) - 'a';
+            if (idx < 0 || idx >= 26) return false;
+            counts[idx]++;
         }
 
-        // Віднімемо букви, які явно задані (не '*')
         for (char c : pattern.toCharArray()) {
             if (c == '*') continue;
-            counts[Character.toLowerCase(c) - 'a']--;
+            if (!Character.isLetter(c)) return false;
+            int idx = Character.toLowerCase(c) - 'a';
+            if (idx < 0 || idx >= 26) return false;
+            counts[idx]--;
         }
 
-        // Якщо хоч один лічильник відʼємний — кандидат не підходить
         for (int count : counts) {
             if (count < 0) return false;
         }

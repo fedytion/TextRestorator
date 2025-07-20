@@ -35,7 +35,6 @@ public class TextSegmenter {
             String fragment = text.substring(index, index + len);
             List<String> candidates = restorer.restoreCandidates(fragment);
 
-            // Сортуємо за частотою
             candidates.sort(Comparator.comparingLong((String w) -> unigramFreq.getOrDefault(w, 1L)).reversed());
             if (candidates.size() > 10) {
                 candidates = candidates.subList(0, 10);
@@ -44,7 +43,6 @@ public class TextSegmenter {
             for (String candidate : candidates) {
                 double score = getWordScore(candidate, prev);
 
-                // 🧠 Додаємо штраф за короткі слова поспіль
                 int newShortCount = candidate.length() <= 3 ? shortCount + 1 : 0;
                 double penalty = newShortCount >= 3 ? -5.0 : 0.0;
 
@@ -68,13 +66,13 @@ public class TextSegmenter {
 
     private double getWordScore(String word, String prev) {
         long unigram = unigramFreq.getOrDefault(word, 1L);
-        double lenBonus = 1 + 0.4 * Math.max(0, word.length() - 3); // даємо перевагу довшим словам
+        double lenBonus = 1 + 0.4 * Math.max(0, word.length() - 3);
 
         double score = Math.log(unigram + 1) * lenBonus;
 
         if (prev != null && bigramFreq.containsKey(prev)) {
             long bigram = bigramFreq.get(prev).getOrDefault(word, 1L);
-            score += 0.5 * Math.log(bigram + 1); // зменшили вагу біграми
+            score += 0.5 * Math.log(bigram + 1);
         }
 
         return score;

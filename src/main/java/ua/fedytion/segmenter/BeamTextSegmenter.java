@@ -55,7 +55,6 @@ public class BeamTextSegmenter {
                     List<String> candidates = restorer.restoreCandidates(fragment);
 
                     if (candidates.isEmpty()) {
-                        // Якщо немає кандидатів — додай сам фрагмент як fallback
                         candidates = new ArrayList<>(List.of(fragment));
                     }
 
@@ -88,8 +87,7 @@ public class BeamTextSegmenter {
             }
 
             if (nextBeam.isEmpty()) {
-                System.out.println("❌ Beam Search зупинився — не знайдено кандидатів.");
-                // fallback: повертаємо найкращий частковий результат
+                System.out.println("Beam Search зупинився — не знайдено кандидатів.");
                 return beam.stream()
                         .max(Comparator.comparingDouble(c -> c.score))
                         .map(c -> c.words)
@@ -117,16 +115,13 @@ public class BeamTextSegmenter {
                 bigramCount = inner.getOrDefault(word, 0L);
             }
 
-            // Ймовірність появи слова word після prev
             score += Math.log((bigramCount + 1.0) / (prevCount + 1.0));
         }
 
-        // Мʼякий штраф за надто довгі слова
         if (word.length() > 12) {
             score -= 2.0;
         }
 
-        // Мʼякий бонус за “нормальні” слова (4–8 букв)
         if (word.length() >= 4 && word.length() <= 8) {
             score += 0.5;
         }

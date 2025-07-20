@@ -30,7 +30,6 @@ public class WordRestorer {
     }
 
     private boolean matchesWithMissingAndShuffled(String pattern, String candidate) {
-        // Перевірка на однакову довжину (з урахуванням зірочок)
         if (pattern.length() != candidate.length()) return false;
 
         int[] counts = new int[26];

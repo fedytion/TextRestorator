@@ -19,21 +19,21 @@ public class Main {
         WordRestorer restorer = new WordRestorer(dictionary, unigram);
         TextSegmenter segmenter = new TextSegmenter(restorer, unigram, bigram);
 
-        String noisy = "A***ew*sbegninignt*g*tv***tried*f*s***ing*y*e*srtseionthebnkaadnofvhaingntohnigtod*";
+        String noisy = "Al*cew*sbegninnigtoegtver*ytriedofsitt*ngbyh*rsitsreonht*bnakandofh*vingnothi*gtodoonc*ortw*icesh*ehdpee*edintoth*boo*khrsiste*wasr*adnigbuti*thadnopictu*esorc*onve*sati*nsinitandwhatisth*useofab**kth*ughtAlic*withou*pic*u*esorco*versa*ions";
 
         List<String> dfs_result = segmenter.segmentText(noisy);
-        System.out.println("✅ Відновлений текст з dfs:");
+        System.out.println("Відновлений текст з dfs:");
         System.out.println(String.join(" ", dfs_result));
 
         BeamTextSegmenter beamSegmenter = new BeamTextSegmenter(restorer, unigram, bigram, 5);
         List<String> beam_result = beamSegmenter.segmentText(noisy);
 
-        System.out.println("✅ Відновлений текст з Beam Search:");
+        System.out.println("Відновлений текст з Beam Search:");
         System.out.println(String.join(" ", beam_result));
 
         BeamSearchSegmenter bs_segmenter = new BeamSearchSegmenter(restorer, unigram, bigram, 5);
         List<String> bs_restored = bs_segmenter.segmentText(noisy);
-        System.out.println("✅ Відновлений текст з Beam Search Extended:");
+        System.out.println("Відновлений текст з Beam Search Extended:");
         System.out.println(String.join(" ", bs_restored));
 
 

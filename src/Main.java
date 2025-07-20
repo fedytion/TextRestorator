@@ -1,6 +1,7 @@
 import main.java.ua.fedytion.loader.DictionaryLoader;
 import main.java.ua.fedytion.loader.FrequencyLoader;
 import main.java.ua.fedytion.restorer.WordRestorer;
+import main.java.ua.fedytion.segmenter.BeamSearchSegmenter;
 import main.java.ua.fedytion.segmenter.BeamTextSegmenter;
 import main.java.ua.fedytion.segmenter.TextSegmenter;
 
@@ -25,9 +26,16 @@ public class Main {
         System.out.println(String.join(" ", dfs_result));
 
         BeamTextSegmenter beamSegmenter = new BeamTextSegmenter(restorer, unigram, bigram, 5);
-        List<String> beam_result = beamSegmenter.segmentText("a***ew*sbegninignt*g*tv***tried*f*s***ing...");
+        List<String> beam_result = beamSegmenter.segmentText(noisy);
 
         System.out.println("✅ Відновлений текст з Beam Search:");
         System.out.println(String.join(" ", beam_result));
+
+        BeamSearchSegmenter bs_segmenter = new BeamSearchSegmenter(restorer, unigram, bigram, 5);
+        List<String> bs_restored = bs_segmenter.segmentText(noisy);
+        System.out.println("✅ Відновлений текст з Beam Search Extended:");
+        System.out.println(String.join(" ", bs_restored));
+
+
     }
 }
